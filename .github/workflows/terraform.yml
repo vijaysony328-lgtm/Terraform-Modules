@@ -1,4 +1,4 @@
-name: Terraform Backend Block
+name: Terraform Backend Bootstrap
 
 on:
   workflow_dispatch:
@@ -22,26 +22,19 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Check Azure Context
-        run: |
-          echo "Checking Azure subscription..."
-          az account show --query "{SubscriptionId:id, SubscriptionName:name, TenantId:tenantId}" -o table
-
-          echo "Checking Resource Group..."
-          az group show --name rg_backend -o table
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
-      - name: Check Terraform Backend Configuration
+      - name: Check Backend Block Folder
         working-directory: ./Backend_block
         run: |
+          echo "Current directory:"
+          pwd
+
           echo "Terraform files:"
           ls -la
 
-          echo "===================================="
-          echo "Current provider.tf:"
-          echo "===================================="
+          echo "provider.tf:"
           cat provider.tf
 
       - name: Terraform Init
@@ -55,3 +48,7 @@ jobs:
       - name: Terraform Plan
         working-directory: ./Backend_block
         run: terraform plan
+
+      - name: Terraform Apply
+        working-directory: ./Backend_block
+        run: terraform apply -auto-approve
