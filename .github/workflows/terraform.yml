@@ -33,6 +33,17 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
 
+      - name: Check Terraform Backend Configuration
+        working-directory: ./Backend_block
+        run: |
+          echo "Terraform files:"
+          ls -la
+
+          echo "===================================="
+          echo "Current provider.tf:"
+          echo "===================================="
+          cat provider.tf
+
       - name: Terraform Init
         working-directory: ./Backend_block
         run: terraform init
