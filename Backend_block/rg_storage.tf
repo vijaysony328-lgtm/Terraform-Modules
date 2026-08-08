@@ -11,5 +11,6 @@ resource "azurerm_storage_account" "storagetest1" {
   resource_group_name      = "rg_test2"
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  depends_on = [ azurerm_resource_group.rg_test1 ]
 
 }
