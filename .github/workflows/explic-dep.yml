@@ -10,40 +10,28 @@ variables:
 
 steps:
 
-# Install Terraform
 - task: TerraformInstaller@1
   displayName: 'Install Terraform'
   inputs:
     terraformVersion: 'latest'
 
-# Terraform Init
-- task: TerraformCLI@2
+- script: |
+    terraform init
   displayName: 'Terraform Init'
-  inputs:
-    command: 'init'
-    workingDirectory: '$(terraformWorkingDirectory)'
+  workingDirectory: '$(terraformWorkingDirectory)'
 
-# Terraform Validate
-- task: TerraformCLI@2
+- script: |
+    terraform validate
   displayName: 'Terraform Validate'
-  inputs:
-    command: 'validate'
-    workingDirectory: '$(terraformWorkingDirectory)'
+  workingDirectory: '$(terraformWorkingDirectory)'
 
-# Terraform Plan
-- task: TerraformCLI@2
+- task: AzureCLI@2
   displayName: 'Terraform Plan'
   inputs:
-    command: 'plan'
+    azureSubscription: 'YOUR-SERVICE-CONNECTION-NAME'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
     workingDirectory: '$(terraformWorkingDirectory)'
-    environmentServiceName: 'YOUR-SERVICE-CONNECTION-NAME'
-
-# Terraform Apply
-- task: TerraformCLI@2
-  displayName: 'Terraform Apply'
-  inputs:
-    command: 'apply'
-    workingDirectory: '$(terraformWorkingDirectory)'
-    environmentServiceName: 'YOUR-SERVICE-CONNECTION-NAME'
-    commandOptions: '-auto-approve'
+    inlineScript: |
+      terraform plan
 ```
