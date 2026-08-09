@@ -1,0 +1,49 @@
+```yaml
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  terraformWorkingDirectory: '$(System.DefaultWorkingDirectory)/Explict_dependancy'
+
+steps:
+
+# Install Terraform
+- task: TerraformInstaller@1
+  displayName: 'Install Terraform'
+  inputs:
+    terraformVersion: 'latest'
+
+# Terraform Init
+- task: TerraformCLI@2
+  displayName: 'Terraform Init'
+  inputs:
+    command: 'init'
+    workingDirectory: '$(terraformWorkingDirectory)'
+
+# Terraform Validate
+- task: TerraformCLI@2
+  displayName: 'Terraform Validate'
+  inputs:
+    command: 'validate'
+    workingDirectory: '$(terraformWorkingDirectory)'
+
+# Terraform Plan
+- task: TerraformCLI@2
+  displayName: 'Terraform Plan'
+  inputs:
+    command: 'plan'
+    workingDirectory: '$(terraformWorkingDirectory)'
+    environmentServiceName: 'YOUR-SERVICE-CONNECTION-NAME'
+
+# Terraform Apply
+- task: TerraformCLI@2
+  displayName: 'Terraform Apply'
+  inputs:
+    command: 'apply'
+    workingDirectory: '$(terraformWorkingDirectory)'
+    environmentServiceName: 'YOUR-SERVICE-CONNECTION-NAME'
+    commandOptions: '-auto-approve'
+```
